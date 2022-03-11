@@ -1,23 +1,35 @@
 import React from 'react'
 import get from 'lodash/get'
-import {View} from 'react-native'
 import {useTailwind} from 'tailwind-rn'
-import {TouchableHighlight} from 'react-native'
+import {TouchableHighlight, TouchableOpacity} from 'react-native'
 
 const opts = {
   primary: 'px-8 py-2 rounded bg-blue-800 text-white',
   secondary: 'px-8 py-2 rounded border border-blue-800 text-blue-800',
 }
 
-const Button = ({children, style = {}, type = 'primary', onPress = () => {}}) => {
+const Button = ({
+  children,
+  classes = '',
+  type = '',
+  opacity = false,
+  onPress = () => {},
+}) => {
   const tailwind = useTailwind()
-  const classes = get(opts, [type], '')
-  const styles = {...tailwind(classes), ...style}
+  const styles = tailwind(
+    [get(opts, [type], ''), classes]
+      .filter(Boolean)
+      .join(' ')
+  )
+
+  const Component = opacity
+    ? TouchableOpacity
+    : TouchableHighlight
 
   return (
-    <TouchableHighlight onPress={onPress}>
-      <View style={styles}>{children}</View>
-    </TouchableHighlight>
+    <Component style={styles} onPress={onPress}>
+      {children}
+    </Component>
   )
 }
 
